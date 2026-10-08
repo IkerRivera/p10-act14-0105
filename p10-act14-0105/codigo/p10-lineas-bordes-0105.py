@@ -1,65 +1,64 @@
 import cv2
 import numpy as np
 import os
-#Iker Montoya 0105
 
-# Cargar imagen desde la carpeta imagenes
+# Iker Montoya 0105
+
+# Cargar imagen
 ruta = os.path.join(os.path.dirname(__file__), "..", "imagenes", "pinguino.jpg")
 imagen = cv2.imread(ruta)
 
-# Verificar que la imagen exista
+# Verificar imagen
 if imagen is None:
     print("Error: no se pudo cargar la imagen.")
-    print("Ruta buscada:", ruta)
+    print("Ruta:", ruta)
     exit()
 
-# Convertir a escala de grises
+# Escala de grises
 gris = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
 
-# Convertir a tipo float32
+# Float32
 gris_float = np.float32(gris)
 
-# Detectar esquinas mediante Harris
+# Detectar esquinas
 esquinas = cv2.cornerHarris(gris_float, 2, 3, 0.04)
 
-# Dilatar para hacer visibles las esquinas
+# Dilatar
 esquinas = cv2.dilate(esquinas, None)
 
-# Crear copia
-resultado = imagen.copy()
+# PRUEBA 1
+resultado1 = imagen.copy()
+umbral1 = 0.01 * esquinas.max()
+resultado1[esquinas > umbral1] = [0, 0, 255]
 
-# Umbral para identificar esquinas
-umbral = 0.01 * esquinas.max()
+# PRUEBA 2
+resultado2 = imagen.copy()
+umbral2 = 0.02 * esquinas.max()
+resultado2[esquinas > umbral2] = [0, 0, 255]
 
-# Marcar esquinas en rojo
-resultado[esquinas > umbral] = [0, 0, 255]
+# PRUEBA 3
+resultado3 = imagen.copy()
+umbral3 = 0.05 * esquinas.max()
+resultado3[esquinas > umbral3] = [0, 0, 255]
 
-# Mostrar imagen original
-cv2.imshow("Pinguino original", imagen)
+# Mostrar resultados
+cv2.imshow("Prueba 0.01", resultado1)
+cv2.imshow("Prueba 0.02", resultado2)
+cv2.imshow("Prueba 0.05", resultado3)
 
-# Mostrar esquinas detectadas
-cv2.imshow("Esquinas detectadas", resultado)
+# Guardar resultados
+cv2.imwrite("../resultados/pinguino_001.jpg", resultado1)
+cv2.imwrite("../resultados/pinguino_002.jpg", resultado2)
+cv2.imwrite("../resultados/pinguino_005.jpg", resultado3)
 
-# Guardar resultado en resultados
-ruta_resultado = os.path.join(
-    os.path.dirname(__file__),
-    "..",
-    "resultados",
-    "pinguino_esquinas.jpg"
-)
+# Mostrar cantidades
+print("Iker Montoya 0105")
+print("Prueba 0.01:", np.sum(esquinas > umbral1), "esquinas")
+print("Prueba 0.02:", np.sum(esquinas > umbral2), "esquinas")
+print("Prueba 0.05:", np.sum(esquinas > umbral3), "esquinas")
 
-cv2.imwrite(ruta_resultado, resultado)
-
-# Contar esquinas
-cantidad_esquinas = np.sum(esquinas > umbral)
-
-print("Deteccion de esquinas terminada.")
-print("Cantidad aproximada de puntos detectados:", cantidad_esquinas)
-print("Resultado guardado en:", ruta_resultado)
-
-# Esperar una tecla
+# Esperar
 cv2.waitKey(0)
 
-# Cerrar ventanas
+# Cerrar
 cv2.destroyAllWindows()
-print("Iker Montoya 0105")
