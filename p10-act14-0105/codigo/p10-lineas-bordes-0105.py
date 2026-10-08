@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import os
+#Iker Montoya 0105
 
 # Cargar imagen desde la carpeta imagenes
 ruta = os.path.join(os.path.dirname(__file__), "..", "imagenes", "pinguino.jpg")
@@ -61,3 +62,4 @@ cv2.waitKey(0)
 
 # Cerrar ventanas
 cv2.destroyAllWindows()
+print("Iker Montoya 0105")
